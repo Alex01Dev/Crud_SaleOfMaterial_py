@@ -13,10 +13,9 @@ def get_user_by_email(db: Session, email: str):
 
 
 def create_user(db: Session, user: schemas.users.userCreate):
-    # Verificar si el correo ya está registrado
     db_user = get_user_by_email(db, user.email)
     if db_user:
-        return None  # Retornamos None para indicar que ya existe
+        return None
 
     new_user = models.user.User(
         name=user.name,
@@ -24,13 +23,35 @@ def create_user(db: Session, user: schemas.users.userCreate):
         typeUser=user.typeUser,
         userName=user.userName,
         email=user.email,
-        password=user.password,  # Idealmente, debes encriptar esto con bcrypt
+        password=user.password,
         phoneNumber=user.phoneNumber,
         status=user.status,
         registrationDate=user.registrationDate,
         updateDate=user.updateDate
     )
+    
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return new_user
+
+def update_user(db: Session, id: int, user: schemas.users.userUpdate):
+    db_user = db.query(models.user.User).filter(models.user.User.id == id).first()
+    if not db_user:
+        return None
+    
+    for key, value in user.dict(exclude_unset=True).items():
+        setattr(db_user, key, value)
+    
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+def delete_user(db: Session, id: int):
+    db_user = db.query(models.user.User).filter(models.user.User.id == id).first()
+    if not db_user:
+        return None
+    
+    db.delete(db_user)
+    db.commit()
+    return db_user
