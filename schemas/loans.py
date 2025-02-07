@@ -3,10 +3,10 @@ from pydantic import BaseModel
 from datetime import datetime
 
 class loanBase(BaseModel):
-    id_user: str
-    id_material: str
-    loanDate: datetime
-    returnedDate: datetime
+    id_user: int
+    id_material: int
+    loanDate: Optional[datetime]
+    returnedDate: Optional[datetime]
     loanStatus: str
 
 class loanCreate(loanBase):

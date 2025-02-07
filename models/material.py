@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Enum
-from sqlalchemy.orm import relationship
-from config.db import Base
 import enum
+from config.db import Base
 
 class TypeMaterial(str, enum.Enum):
     Canon = "Canon"
@@ -23,6 +22,3 @@ class Material(Base):
     state = Column(Enum(State))
     registrationDate = Column(DateTime)
     updateDate = Column(DateTime)
-
-    # Relación con Loan
-    loans = relationship("Loan", back_populates="material")

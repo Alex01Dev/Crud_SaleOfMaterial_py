@@ -10,10 +10,10 @@ class materialBase(BaseModel):
     registrationDate: datetime
     updateDate: datetime
 
-class materialCreate(BaseModel):
+class materialCreate(materialBase):
     pass
 
-class materialUpdate(BaseModel):
+class materialUpdate(materialBase):
     pass
 
 class materialr(materialBase):

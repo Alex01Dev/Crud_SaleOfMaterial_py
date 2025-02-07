@@ -31,5 +31,3 @@ class User(Base):
     status = Column(Enum(Status))
     registrationDate = Column(DateTime)
     updateDate = Column(DateTime)
-
-    loans = relationship("Loan", back_populates="user")
