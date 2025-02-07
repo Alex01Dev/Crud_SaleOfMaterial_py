@@ -1,3 +1,7 @@
+'''
+Module that defines the User model in the database.
+'''
+
 from sqlalchemy import Column, Integer, String, DateTime, Enum
 from sqlalchemy.orm import relationship
 from config.db import Base

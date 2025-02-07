@@ -1,3 +1,7 @@
+'''
+Main starts the app and fetches the endpoints.
+'''
+
 from fastapi import FastAPI
 from routes.usersRoutes import user
 from routes.materialRoutes import material
@@ -10,4 +14,3 @@ app = FastAPI(
 app.include_router(user)
 app.include_router(material)
 app.include_router(loans)
-

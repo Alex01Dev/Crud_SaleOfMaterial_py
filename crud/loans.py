@@ -1,3 +1,7 @@
+'''
+CRUD module for loans management.
+'''
+
 from sqlalchemy.orm import Session
 from models.loan import Loan
 from schemas.loans import loanCreate, loanUpdate
@@ -5,12 +9,21 @@ from fastapi import HTTPException
 from datetime import datetime
 
 def get_loans(db: Session):
+    """
+    Retrieves all loans.
+    """
     return db.query(Loan).all()
 
 def get_loan(db: Session, loan_id: int):
+    """
+    Retrieves a single loan by its ID.
+    """
     return db.query(Loan).filter(Loan.id == loan_id).first()
 
 def create_loan(db: Session, loan_data: loanCreate):
+    """
+    Creates a new loan.
+    """
     new_loan = Loan(
         id_user=loan_data.id_user,
         id_material=loan_data.id_material,
@@ -26,6 +39,9 @@ def create_loan(db: Session, loan_data: loanCreate):
     return new_loan
 
 def update_loan(db: Session, loan_id: int, loan_data: loanUpdate):
+    """
+    Updates an existing loan.
+    """
     db_loan = db.query(Loan).filter(Loan.id == loan_id).first()
     if not db_loan:
         raise HTTPException(status_code=404, detail="Loan not found")
@@ -42,6 +58,9 @@ def update_loan(db: Session, loan_id: int, loan_data: loanUpdate):
     return db_loan
 
 def delete_loan(db: Session, loan_id: int):
+    """
+    Deletes a loan.
+    """
     db_loan = db.query(Loan).filter(Loan.id == loan_id).first()
     if not db_loan:
         raise HTTPException(status_code=404, detail="Loan not found")
