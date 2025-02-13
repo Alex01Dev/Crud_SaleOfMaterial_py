@@ -4,6 +4,7 @@ Module that defines the Material model in the database.
 
 from sqlalchemy import Column, Integer, String, DateTime, Enum
 import enum
+from sqlalchemy.orm import relationship
 from config.db import Base
 
 class TypeMaterial(str, enum.Enum):
@@ -37,3 +38,4 @@ class Material(Base):
     state = Column(Enum(State))
     registrationDate = Column(DateTime)
     updateDate = Column(DateTime)
+    loans = relationship("Loan", back_populates="material")

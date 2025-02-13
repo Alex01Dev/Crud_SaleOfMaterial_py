@@ -2,8 +2,9 @@
 Module that defines the Loan model in the database.
 '''
 
-from sqlalchemy import Column, Integer, DateTime, Enum
+from sqlalchemy import Column, Integer, DateTime, Enum, ForeignKey
 from config.db import Base
+from sqlalchemy.orm import relationship
 import enum
 
 class LoanStatus(str, enum.Enum):
@@ -22,10 +23,12 @@ class Loan(Base):
     __tablename__ = "tbb_loans"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    id_user = Column(Integer, nullable=False)
-    id_material = Column(Integer, nullable=False)
+    id_user = Column(Integer, ForeignKey("tbb_users.id"), nullable=False)
+    id_material = Column(Integer, ForeignKey("tbb_materials.id"), nullable=False)
     loanDate = Column(DateTime)
     returnDate = Column(DateTime)
     loanStatus = Column(Enum(LoanStatus))
     registrationDate = Column(DateTime)
     updateDate = Column(DateTime)
+    user = relationship("User", back_populates="loans")
+    material = relationship("Material", back_populates="loans")

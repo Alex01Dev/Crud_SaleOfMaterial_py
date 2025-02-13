@@ -34,4 +34,5 @@ class User(Base):
     phoneNumber = Column(String(20))
     status = Column(Enum(Status))
     registrationDate = Column(DateTime)
-    updateDate = Column(DateTime)
+    updateDate = Column(DateTime)   
+    loans = relationship("Loan", back_populates="user")
