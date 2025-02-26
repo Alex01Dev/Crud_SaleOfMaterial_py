@@ -50,3 +50,11 @@ class user(userBase):
         with SQLAlchemy models by allowing automatic data conversion.
         """
         orm_mode = True
+
+class UserLogin(BaseModel):
+    correoElectronico: str
+    contrasena: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

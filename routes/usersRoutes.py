@@ -2,16 +2,24 @@
 FastAPI routes for User management.
 '''
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends,  status, Header
 from sqlalchemy.orm import Session
 import crud.users
 import config.db
+from schemas.users import UserLogin, Token, userCreate, userUpdate
 import schemas.users
+from datetime import datetime, timedelta
+from typing import List, Optional
+from jose import JWTError, jwt
 import models.user
 
 from typing import List
 
 user = APIRouter()
+
+SECRET_KEY = "amauri_key"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 models.user.Base.metadata.create_all(bind=config.db.engine)
 
@@ -26,6 +34,30 @@ def get_db():
     finally:
         db.close()
         print("Conexión cerrada.")
+
+def verify_token_simple(authorization: Optional[str] = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token no proporcionado o inválido",
+        )
+
+    token = authorization.split("Bearer ")[1]  # Extrae el token
+    
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
+        return email
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido o expirado")
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 @user.get("/user/", response_model=List[schemas.users.user], tags=["Users"])
 async def read_users(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
