@@ -10,8 +10,14 @@ SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:alexfango04@localhost:3309/bd_pr
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False,autoflush=False,bind=engine)
 Base = declarative_base()
-try:
-    engine.connect()
-    print("Conexión exitosa a la base de datos")
-except Exception as e:
-    print(f"Error al conectar a la base de datos: {e}")
+def get_db():
+    """
+    Establishes a connection to the database and ensures it gets closed once the operation is completed.
+    """
+    db = config.db.SessionLocal()
+    try:
+        print("Conectando a la base de datos...")
+        yield db
+    finally:
+        db.close()
+        print("Conexión cerrada.")

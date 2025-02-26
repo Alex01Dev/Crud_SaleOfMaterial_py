@@ -10,7 +10,7 @@ import models.user
 from config.db import get_db
 
 # Configuración de JWT
-SECRET_KEY = "my_secret_key_amauri"
+SECRET_KEY = "amauri_key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
